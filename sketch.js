@@ -14,30 +14,31 @@ var gaps = [];
 
 
 function game_over(){
-  console.log("game over called");
+  in_game = 0;
+  console.log("game over!");
 }
 
 function wrap_up(){
-  
+  // functionality to be added later
 }
 
 function keyTyped() {
+  if(in_game === 0) return;
   if (key === ' ') {
     bird.vely = -7.2;
   } 
 }
 
 function collision_check(){
-  /*var x = bird.posx;
-  var y = bird.posy;
-  var d = bird.dia;
-  
-  var points = 
-  for(i=0; i<gaps.length; i++){
-    
-    
+  var status = false;
+  for (i=0; i<gaps.length; i++){
+    if ( ((bird.posx+bird.dia/2 > gaps[i].xmin) && (bird.posx-bird.dia/2 < gaps[i].xmin)||
+          (bird.posx-bird.dia/2 < gaps[i].xmax) && (bird.posx+bird.dia/2 > gaps[i].xmax))&&
+          !(bird.posy+bird.dia/2 < gaps[i].ymax && bird.posy-bird.dia/2 > gaps[i].ymin) ){
+      status = true;
+    } // this place is quite complicated
   }
-  //return true or false..*/
+  return status;
 }
 
 function add_gap(){
@@ -78,12 +79,12 @@ function update_gap(){
 
 function draw_gap(){
   for(i=0; i<gaps.length; i++){
-    fill(50, 255, 0, 200);
+    fill(28, 3, 4);
     rect(gaps[i].xmin, 0, gaps[i].xmax - gaps[i].xmin, gaps[i].ymin);
-    //image(choc, gaps[i].xmin-105, -3, (gaps[i].xmax - gaps[i].xmin)*3.2, gaps[i].ymin+10);
+    image(choc, gaps[i].xmin-105, -3, (gaps[i].xmax - gaps[i].xmin)*3.2, gaps[i].ymin+10);
     
     rect(gaps[i].xmin, gaps[i].ymax, gaps[i].xmax - gaps[i].xmin, scrsize - gaps[i].ymin);
-    //image(choc, gaps[i].xmin-105, gaps[i].ymax-12, (gaps[i].xmax - gaps[i].xmin)*3.2, scrsize - gaps[i].ymin);
+    image(choc, gaps[i].xmin-105, gaps[i].ymax-12, (gaps[i].xmax - gaps[i].xmin)*3.2, scrsize - gaps[i].ymin);
     //fill(50, 255, 0, 200);
     //ellipse((gaps[i].xmax+gaps[i].xmin)/2, (gaps[i].ymax+gaps[i].ymin)/2, 
     //      (gaps[i].xmax-gaps[i].xmin), (gaps[i].ymax-gaps[i].ymin));
@@ -94,17 +95,13 @@ function update_bird(){
   if(bird.posy + bird.vely >= ground.posy){ // ground to bird collision check done here
     bird.posy = ground.posy;
     draw_bird();
-    wrap_up();
+    //wrap_up();
     game_over();
     return;
   }
   bird.posy += bird.vely;
   bird.vely += bird.accy;
   draw_bird();
-  if(collision_check()){  //  pillar to gap collision check done in the func called here
-    wrap_up();
-    game_over();
-  }
 }
 
 function draw_bird(){
@@ -123,8 +120,9 @@ function preload(){
 
 function setup() {
   createCanvas(600, 600);
-  background(0);
+  background(bgimg);
   first_gap = 1;
+  in_game = 1;
   bird = {
     posx: 150,
     posy: scrsize/2,
@@ -144,9 +142,14 @@ function setup() {
 function critical_section(){
   update_bird();
   update_gap();
+  if(collision_check()){  //  pillar to gap collision check done in the func called here
+    //wrap_up();
+    game_over();
+  }
 }
 
 function draw() {
+  if(in_game === 0) return;
   background(bgimg);
   critical_section();
 }
