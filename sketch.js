@@ -8,7 +8,7 @@ var in_game = 0;
 
 var gap_width = 100;
 var num_gaps  = 3;
-var inter_gap_width = 220;
+var inter_gap_width = 250;
 var gap_size = 150;
 var gaps = [];
 
@@ -23,15 +23,21 @@ function wrap_up(){
 
 function keyTyped() {
   if (key === ' ') {
-    bird.vely = -7.5;
+    bird.vely = -7.2;
   } 
 }
 
 function collision_check(){
+  /*var x = bird.posx;
+  var y = bird.posy;
+  var d = bird.dia;
+  
+  var points = 
   for(i=0; i<gaps.length; i++){
     
+    
   }
-  //return true or false..
+  //return true or false..*/
 }
 
 function add_gap(){
@@ -42,8 +48,6 @@ function add_gap(){
     xmin : scrsize + inter_gap_width,
     xmax : scrsize + inter_gap_width + gap_width
   }
-  
-  
   gaps.push(gap);
 }
 
@@ -74,9 +78,15 @@ function update_gap(){
 
 function draw_gap(){
   for(i=0; i<gaps.length; i++){
-    fill(255, 255, 255, 100);
-    ellipse((gaps[i].xmax+gaps[i].xmin)/2, (gaps[i].ymax+gaps[i].ymin)/2, 
-          (gaps[i].xmax-gaps[i].xmin), (gaps[i].ymax-gaps[i].ymin));
+    fill(50, 255, 0, 200);
+    rect(gaps[i].xmin, 0, gaps[i].xmax - gaps[i].xmin, gaps[i].ymin);
+    //image(choc, gaps[i].xmin-105, -3, (gaps[i].xmax - gaps[i].xmin)*3.2, gaps[i].ymin+10);
+    
+    rect(gaps[i].xmin, gaps[i].ymax, gaps[i].xmax - gaps[i].xmin, scrsize - gaps[i].ymin);
+    //image(choc, gaps[i].xmin-105, gaps[i].ymax-12, (gaps[i].xmax - gaps[i].xmin)*3.2, scrsize - gaps[i].ymin);
+    //fill(50, 255, 0, 200);
+    //ellipse((gaps[i].xmax+gaps[i].xmin)/2, (gaps[i].ymax+gaps[i].ymin)/2, 
+    //      (gaps[i].xmax-gaps[i].xmin), (gaps[i].ymax-gaps[i].ymin));
   }
 }
 
@@ -104,12 +114,11 @@ function draw_bird(){
 }
 
 
-
-
 function preload(){
   bgimg = loadImage("assets/bgimg.jpg");
   flame = loadImage("assets/flame.png");
-  bird  = loadImage("assets/flame.png");
+  bird  = loadImage("assets/bird.gif");
+  choc  = loadImage("assets/choc.gif");
 }
 
 function setup() {
