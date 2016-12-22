@@ -1,21 +1,23 @@
-var scrsize = 600;
-var gravity = 0.35;
+var scrsize = 600;    // do NOT change values of these variables
+var gravity = 0.35;   
 var bird;
 var game_speed = 5;
 var in_game = 0;
-
-
-
+var score = 0.0;
+var time = 0;
+//=========================================================================//
 var gap_width = 100;
 var num_gaps  = 3;
 var inter_gap_width = 250;
 var gap_size = 150;
 var gaps = [];
-
+var mid_dialog = "Dodge snickers bars and earn fat!";
+var mid_dialog_size = 28;
 
 function game_over(){
   in_game = 0;
-  console.log("game over!");
+  mid_dialog = "too fat to fly straight!";
+  mid_dialog_size = 40;
 }
 
 function wrap_up(){
@@ -23,7 +25,11 @@ function wrap_up(){
 }
 
 function keyTyped() {
-  if(in_game === 0) return;
+  mid_dialog = "";
+  if(in_game === 0) {
+    setup();
+    in_game=1;
+  }
   if (key === ' ') {
     bird.vely = -7.2;
   } 
@@ -107,14 +113,33 @@ function update_bird(){
 function draw_bird(){
   fill(255);
   noStroke();
+  
   ellipse(bird.posx, bird.posy, bird.dia, bird.dia);
+  if(bird.vely < 0){
+    image(flame, bird.posx-27, bird.posy+5, flame.width/2.3, flame.height/2.3);
+    textSize(25);
+    text("", bird.posx+26, bird.posy+20);
+  }
+  //image(birdimg, bird.posx-42, bird.posy-28, birdimg.width/4-3, birdimg.height/4.5-5);
+  
 }
 
+function update_score(){
+  textSize(42);
+  textFont("Verdana");
+  stroke(180, 53, 7);
+  fill(255, 255, 255, 180);
+  text("Fat: ", 400, 80);
+  textSize(54);
+  textFont("Verdana");
+  fill(255, 255, 255, 230);
+  text(score.toFixed(0), 500, 80);
+}
 
 function preload(){
   bgimg = loadImage("assets/bgimg.jpg");
   flame = loadImage("assets/flame.png");
-  bird  = loadImage("assets/bird.gif");
+  birdimg  = loadImage("assets/bird.gif");
   choc  = loadImage("assets/choc.gif");
 }
 
@@ -122,7 +147,10 @@ function setup() {
   createCanvas(600, 600);
   background(bgimg);
   first_gap = 1;
-  in_game = 1;
+  //in_game = 1;
+  time = 0;
+  score = 0;
+  gaps = [];
   bird = {
     posx: 150,
     posy: scrsize/2,
@@ -146,10 +174,24 @@ function critical_section(){
     //wrap_up();
     game_over();
   }
+  update_score();
 }
 
 function draw() {
-  if(in_game === 0) return;
-  background(bgimg);
-  critical_section();
+  time += 1;
+  time %= 36001;
+  if(in_game === 1){
+    background(bgimg);
+    critical_section();
+    if(time % (60) === 0){
+      score+=0.5;
+    }
+  }
+  push();
+  textSize(mid_dialog_size);
+  textFont("Calibri");
+  fill(255);
+  noStroke();
+  text(mid_dialog, 100, 200);
+  pop();
 }
